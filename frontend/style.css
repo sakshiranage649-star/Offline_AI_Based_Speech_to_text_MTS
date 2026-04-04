@@ -1,0 +1,63 @@
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(186, 195, 255, 0.15);
+    border-radius: 10px;
+    transition: background 0.25s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(186, 195, 255, 0.3);
+}
+
+/* History Card */
+.history-item {
+    background: #171f33;
+    border-radius: 2rem;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.history-item:hover {
+    background: #1c243d;
+    transform: translateY(-6px);
+    border-color: rgba(186, 195, 255, 0.15);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Toast */
+#toast.show {
+    opacity: 1;
+    transform: translate(-50%, -20px);
+}
+
+/* Select overrides */
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23BAC3FF' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1.25rem center;
+    background-size: 1rem;
+    padding-right: 3rem;
+}
+
+/* Custom Textarea / Loader Transitions */
+#loader {
+    transition: opacity 0.3s ease;
+}
+
+/* Focus effects */
+textarea:focus-visible {
+    outline: none;
+}

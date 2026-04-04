@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transly | Smart Offline Translation</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#0b1326] text-[#dae2fd] font-['Inter'] selection:bg-[#bac3ff]/30 antialiased">
+
+    <div class="min-h-screen flex flex-col">
+        
+        <!-- Header -->
+        <header class="max-w-7xl mx-auto w-full px-10 py-10 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-[#bac3ff] rounded-2xl flex items-center justify-center shadow-lg shadow-[#bac3ff]/10">
+                    <i data-lucide="languages" class="w-7 h-7 text-[#0b1326]"></i>
+                </div>
+                <div>
+                     <h1 class="font-['Manrope'] text-2xl font-extrabold tracking-tight">Transly</h1>
+                     <p class="text-[10px] font-bold text-[#bac3ff] uppercase tracking-[0.2em] opacity-80">Empowering Offline Growth</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-6">
+                <!-- Status Indicators -->
+                <div id="backend-status" class="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-2xl border border-white/5 text-[10px] font-bold uppercase tracking-widest text-[#c5c5d4]">
+                    <div class="flex items-center gap-2">
+                        <span id="db-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                        DB: <span id="db-status">Checking</span>
+                    </div>
+                    <div class="w-px h-3 bg-white/10"></div>
+                    <div class="flex items-center gap-2">
+                        <span id="model-dot" class="w-1.5 h-1.5 rounded-full bg-gray-500"></span>
+                        AI: <span id="model-status">Checking</span>
+                    </div>
+                </div>
+
+                <div class="w-10 h-10 rounded-full border-2 border-white/5 overflow-hidden hover:border-[#bac3ff]/50 transition-colors cursor-pointer">
+                    <img src="https://ui-avatars.com/api/?name=User&background=171f33&color=bac3ff" alt="Profile">
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow max-w-7xl mx-auto w-full px-10 pb-20">
+            
+            <div class="space-y-10">
+                
+                <!-- Workspace Container -->
+                <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 items-center">
+                    
+                    <!-- Source Column -->
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between px-2">
+                             <select id="source-lang" class="bg-[#171f33] text-sm font-bold text-[#bac3ff] px-6 py-3 rounded-2xl border-none focus:ring-0 cursor-pointer hover:bg-[#1c243d] transition-colors">
+                                <option value="en">English</option>
+                                <option value="fr">French</option>
+                                <option value="de">German</option>
+                                <option value="es">Spanish</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="ru">Russian</option>
+                                <option value="zh">Chinese</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ar">Arabic</option>
+                                <option value="hi">Hindi</option>
+                            </select>
+                            <div class="flex gap-1.5">
+                                 <button id="mic-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Microphone">
+                                    <i data-lucide="mic" class="w-5 h-5"></i>
+                                </button>
+                                <button id="upload-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Upload Attachment">
+                                    <i data-lucide="paperclip" class="w-5 h-5"></i>
+                                    <input type="file" id="file-input" class="hidden">
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="bg-[#171f33] rounded-[2.5rem] p-8 min-h-[400px] flex flex-col border-4 border-transparent focus-within:border-[#bac3ff]/5 transition-all shadow-inner">
+                            <textarea id="source-text" placeholder="Start typing your source text..." class="bg-transparent border-none focus:ring-0 text-2xl font-semibold w-full flex-grow resize-none text-white placeholder-gray-600 leading-normal custom-scrollbar"></textarea>
+                            <div class="flex items-center justify-between mt-6 pt-6 border-t border-white/[0.03]">
+                                 <span id="char-count" class="text-xs font-bold text-gray-600 uppercase tracking-widest">0 words</span>
+                                 <button id="clear-text" class="text-xs font-bold text-gray-600 hover:text-white uppercase transition-colors">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swap Button (Center Desktop) -->
+                    <div class="hidden lg:flex flex-col items-center justify-center p-4">
+                        <button id="swap-langs" class="w-14 h-14 bg-[#bac3ff] text-[#0b1326] rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-xl shadow-[#bac3ff]/20">
+                            <i data-lucide="arrow-right-left" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+
+                    <!-- Mobile Swap/Button -->
+                    <div class="lg:hidden flex justify-center py-4">
+                         <button id="swap-langs-mobile" class="p-4 bg-[#bac3ff] text-[#0b1326] rounded-full shadow-lg">
+                             <i data-lucide="refresh-cw" class="w-6 h-6"></i>
+                         </button>
+                    </div>
+
+                    <!-- Translated Column -->
+                    <div class="space-y-4 lg:mt-0">
+                         <div class="flex items-center justify-between px-2">
+                             <select id="target-lang" class="bg-[#171f33] text-sm font-bold text-[#bac3ff] px-6 py-3 rounded-2xl border-none focus:ring-0 cursor-pointer hover:bg-[#1c243d] transition-colors">
+                                <option value="en">English</option>
+                                <option value="fr" selected>French</option>
+                                <option value="de">German</option>
+                                <option value="es">Spanish</option>
+                                <option value="it">Italian</option>
+                                <option value="pt">Portuguese</option>
+                                <option value="ru">Russian</option>
+                                <option value="zh">Chinese</option>
+                                <option value="ja">Japanese</option>
+                                <option value="ar">Arabic</option>
+                                <option value="hi">Hindi</option>
+                            </select>
+                            <button id="copy-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Copy Session">
+                                <i data-lucide="copy" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-[#222a3d] rounded-[2.5rem] p-8 min-h-[400px] flex flex-col relative border border-[#bac3ff]/10 shadow-2xl shadow-black/40">
+                            <div id="target-text-container" class="flex-grow">
+                                <p id="result-text" class="text-2xl font-semibold text-white leading-normal whitespace-pre-wrap custom-scrollbar"></p>
+                                <div id="loader" class="hidden absolute inset-0 flex items-center justify-center bg-[#222a3d]/90 rounded-[2.5rem] backdrop-blur-md">
+                                    <div class="flex flex-col items-center gap-6">
+                                         <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#bac3ff]/20 border-t-[#bac3ff]"></div>
+                                         <span class="text-xs font-bold text-[#bac3ff] uppercase tracking-[0.3em]">Processing AI Models</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Action Bar -->
+                <div class="flex justify-center pt-8">
+                     <button id="translate-btn" class="group relative px-16 py-6 bg-[#bac3ff] text-[#0b1326] rounded-[2rem] font-black text-xl flex items-center gap-4 hover:bg-white hover:scale-[1.03] transition-all shadow-2xl shadow-[#bac3ff]/30 active:scale-95">
+                        <span>Translate Dialogue</span>
+                        <i data-lucide="chevron-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform"></i>
+                    </button>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="mt-20">
+                    <div class="flex items-center gap-6 mb-8">
+                        <h3 class="font-['Manrope'] text-xl font-bold tracking-tight">Recent Sessions</h3>
+                        <div class="relative flex-grow max-w-sm">
+                            <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                            <input type="text" id="history-search" placeholder="Search sessions..." class="w-full bg-[#171f33] border-none text-xs font-bold text-[#bac3ff] pl-12 pr-4 py-3 rounded-xl focus:ring-1 focus:ring-[#bac3ff]/30 placeholder:text-gray-700">
+                        </div>
+                        <div class="h-px flex-grow bg-white/[0.05]"></div>
+                    </div>
+                    
+                    <div id="history-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <!-- Activity cards injected here -->
+                    </div>
+                </div>
+
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-10 py-12 border-t border-white/[0.03] flex flex-col sm:flex-row items-center justify-between gap-6 opacity-30">
+             <div class="flex items-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                <p class="text-[10px] font-bold uppercase tracking-widest">End-to-End Encryption • Offline Processing</p>
+             </div>
+             <p class="text-[10px] font-bold uppercase tracking-widest">&copy; 2026 Transly Modular Intelligence</p>
+        </footer>
+    </div>
+
+    <!-- Feedback UI -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 px-8 py-4 bg-white text-[#0b1326] rounded-full font-bold shadow-2xl opacity-0 transform translate-y-10 transition-all pointer-events-none z-[100] text-xs uppercase tracking-widest">
+        Session Refreshed
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
