@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const charCount = document.getElementById('char-count');
     const historySearch = document.getElementById('history-search');
 
-    const API_URL = ''; // Same origin
+    const API_URL = 'https://transly-fw3a.onrender.com'; // Render Backend
     let translateTimeout;
 
     // --- Translation ---
