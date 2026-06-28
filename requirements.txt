@@ -6,7 +6,9 @@ torch
 vosk
 PyPDF2
 moviepy
+imageio-ffmpeg
 mysql-connector-python
 python-multipart
 python-dotenv
 pydantic
+librosa

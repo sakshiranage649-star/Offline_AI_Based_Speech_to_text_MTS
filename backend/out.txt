@@ -1,0 +1,11 @@
+C:\Users\Admin\OneDrive\Desktop\Transly\backend\app.py:17: DeprecationWarning: 
+        on_event is deprecated, use lifespan event handlers instead.
+
+        Read more about it in the
+        [FastAPI docs for Lifespan Events](https://fastapi.tiangolo.com/advanced/events/).
+        
+  @app.on_event("startup")
+INFO:     Will watch for changes in these directories: ['C:\\Users\\Admin\\OneDrive\\Desktop\\Transly\\backend']
+ERROR:    [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions
+Using device: cpu
+Connected to database sqlite

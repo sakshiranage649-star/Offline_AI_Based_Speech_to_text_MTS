@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Transly | Smart Offline Translation</title>
-    <meta name="description" content="Transly is a fully offline, high-speed multilingual AI translation application powered by PyTorch and Whisper. Secure and self-hosted.">
+    <title>Multilingual Translation | Smart Offline Translation</title>
+    <meta name="description" content="Multilingual Translation is a fully offline, high-speed multilingual AI translation application powered by PyTorch and Whisper. Secure and self-hosted.">
     <meta name="keywords" content="Offline Translation, AI, PyTorch, Whisper, Secure Translations">
-    <meta property="og:title" content="Transly | Smart Offline Translation">
+    <meta property="og:title" content="Multilingual Translation | Smart Offline Translation">
     <meta property="og:description" content="Secure, fast, strictly offline multilingual AI translation.">
     <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@700;800&display=swap" rel="stylesheet">
+    <script src="assets/js/tailwindcss.js"></script>
+    <link href="assets/css/google_fonts.css" rel="stylesheet">
     <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="assets/js/lucide.js"></script>
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
@@ -27,12 +27,39 @@
                     <i data-lucide="languages" class="w-7 h-7 text-[#0b1326]"></i>
                 </div>
                 <div>
-                     <h1 class="font-['Manrope'] text-2xl font-extrabold tracking-tight">Transly</h1>
+                     <h1 class="font-['Manrope'] text-2xl font-extrabold tracking-tight">Multilingual Translation</h1>
                      <p class="text-[10px] font-bold text-[#bac3ff] uppercase tracking-[0.2em] opacity-80">Empowering Offline Growth</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-6">
+                <!-- User Info & Auth -->
+                <div id="user-display" class="hidden flex items-center gap-4 px-4 py-2 bg-white/5 rounded-2xl border border-white/5 text-[10px] font-bold uppercase tracking-widest text-[#bac3ff]">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="user" class="w-3 h-3"></i>
+                        <span id="display-username">User</span>
+                    </div>
+                    <div class="w-px h-3 bg-white/10"></div>
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="coins" class="w-3 h-3"></i>
+                        <span id="display-tokens">0</span>
+                    </div>
+                    <div id="admin-link" class="hidden">
+                        <div class="w-px h-3 bg-white/10"></div>
+                        <a href="admin.html" class="ml-2 hover:text-white transition-colors">Admin Panel</a>
+                    </div>
+                    <div class="w-px h-3 bg-white/10"></div>
+                    <button onclick="toggleSettings()" class="hover:text-white transition-colors">Settings</button>
+                    <div class="w-px h-3 bg-white/10"></div>
+                    <button onclick="logout()" class="px-5 py-2 bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all border border-red-500/20">Logout</button>
+                    <div class="w-px h-3 bg-white/10"></div>
+                    <div class="w-8 h-8 rounded-full border border-white/10 overflow-hidden">
+                        <img id="user-avatar" src="assets/img/default_avatar.svg" alt="Profile">
+                    </div>
+                </div>
+                
+                <a id="login-link" href="login.html" class="px-6 py-2 bg-[#bac3ff] text-[#0b1326] rounded-xl text-xs font-black uppercase tracking-widest hover:bg-white transition-all">Login</a>
+
                 <!-- Status Indicators -->
                 <div id="backend-status" class="flex items-center gap-4 px-4 py-2 bg-white/5 rounded-2xl border border-white/5 text-[10px] font-bold uppercase tracking-widest text-[#c5c5d4]">
                     <div class="flex items-center gap-2">
@@ -45,11 +72,8 @@
                         AI: <span id="model-status">Checking</span>
                     </div>
                 </div>
-
-                <div class="w-10 h-10 rounded-full border-2 border-white/5 overflow-hidden hover:border-[#bac3ff]/50 transition-colors cursor-pointer">
-                    <img src="https://ui-avatars.com/api/?name=User&background=171f33&color=bac3ff" alt="Profile">
-                </div>
             </div>
+
         </header>
 
         <!-- Main Content -->
@@ -64,7 +88,7 @@
                     <div class="space-y-4">
                         <div class="flex items-center justify-between px-2">
                              <select id="source-lang" class="bg-[#171f33] text-sm font-bold text-[#bac3ff] px-6 py-3 rounded-2xl border-none focus:ring-0 cursor-pointer hover:bg-[#1c243d] transition-colors">
-                                <option value="en">English</option>
+                                <option value="en" selected>English</option>
                                 <option value="fr">French</option>
                                 <option value="de">German</option>
                                 <option value="es">Spanish</option>
@@ -75,12 +99,23 @@
                                 <option value="ja">Japanese</option>
                                 <option value="ar">Arabic</option>
                                 <option value="hi">Hindi</option>
+                                <option value="mr">Marathi</option>
+                                <option value="bn">Bengali</option>
+                                <option value="te">Telugu</option>
+                                <option value="ta">Tamil</option>
+                                <option value="gu">Gujarati</option>
+                                <option value="ur">Urdu</option>
+                                <option value="kn">Kannada</option>
+                                <option value="or">Odia</option>
+                                <option value="ml">Malayalam</option>
+                                <option value="pa">Punjabi</option>
                             </select>
                             <div class="flex gap-1.5">
-                                 <button id="mic-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Microphone">
-                                    <i data-lucide="mic" class="w-5 h-5"></i>
+                                 <button id="mic-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all relative" title="Microphone">
+                                    <i data-lucide="mic" class="w-5 h-5 relative z-10"></i>
+                                    <div id="mic-visualizer" class="absolute inset-0 bg-red-500/20 rounded-xl rounded-xl scale-0 transition-transform duration-75 origin-center"></div>
                                 </button>
-                                <button id="upload-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Upload Attachment">
+                                <button id="upload-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Upload Video, Audio or Document">
                                     <i data-lucide="paperclip" class="w-5 h-5"></i>
                                     <input type="file" id="file-input" class="hidden">
                                 </button>
@@ -114,8 +149,8 @@
                     <div class="space-y-4 lg:mt-0">
                          <div class="flex items-center justify-between px-2">
                              <select id="target-lang" class="bg-[#171f33] text-sm font-bold text-[#bac3ff] px-6 py-3 rounded-2xl border-none focus:ring-0 cursor-pointer hover:bg-[#1c243d] transition-colors">
-                                <option value="en">English</option>
-                                <option value="fr" selected>French</option>
+                                <option value="en" selected>English</option>
+                                <option value="fr">French</option>
                                 <option value="de">German</option>
                                 <option value="es">Spanish</option>
                                 <option value="it">Italian</option>
@@ -125,6 +160,16 @@
                                 <option value="ja">Japanese</option>
                                 <option value="ar">Arabic</option>
                                 <option value="hi">Hindi</option>
+                                <option value="mr">Marathi</option>
+                                <option value="bn">Bengali</option>
+                                <option value="te">Telugu</option>
+                                <option value="ta">Tamil</option>
+                                <option value="gu">Gujarati</option>
+                                <option value="ur">Urdu</option>
+                                <option value="kn">Kannada</option>
+                                <option value="or">Odia</option>
+                                <option value="ml">Malayalam</option>
+                                <option value="pa">Punjabi</option>
                             </select>
                             <button id="copy-btn" class="p-3 bg-[#171f33] text-gray-400 hover:text-[#bac3ff] hover:bg-[#1c243d] rounded-xl transition-all" title="Copy Session">
                                 <i data-lucide="copy" class="w-5 h-5"></i>
@@ -162,6 +207,10 @@
                             <i data-lucide="search" class="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
                             <input type="text" id="history-search" placeholder="Search sessions..." class="w-full bg-[#171f33] border-none text-xs font-bold text-[#bac3ff] pl-12 pr-4 py-3 rounded-xl focus:ring-1 focus:ring-[#bac3ff]/30 placeholder:text-gray-700">
                         </div>
+                        <button id="download-history" class="px-4 py-3 bg-white/5 hover:bg-white/10 text-[#bac3ff] rounded-xl text-[10px] font-bold uppercase tracking-widest border border-white/5 transition-all flex items-center gap-2">
+                            <i data-lucide="download" class="w-3 h-3"></i>
+                            Download
+                        </button>
                         <div class="h-px flex-grow bg-white/[0.05]"></div>
                     </div>
                     
@@ -180,8 +229,33 @@
                 <i data-lucide="shield-check" class="w-4 h-4"></i>
                 <p class="text-[10px] font-bold uppercase tracking-widest">End-to-End Encryption • Offline Processing</p>
              </div>
-             <p class="text-[10px] font-bold uppercase tracking-widest">&copy; 2026 Transly Modular Intelligence</p>
+             <p class="text-[10px] font-bold uppercase tracking-widest">&copy; 2026 Multilingual Translation</p>
         </footer>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-[#0b1326]/80 backdrop-blur-sm z-[150] hidden flex items-center justify-center p-6">
+        <div class="bg-[#171f33] border border-white/5 w-full max-w-md rounded-[2.5rem] p-10 shadow-2xl">
+            <div class="flex items-center justify-between mb-8">
+                <h2 class="text-2xl font-black tracking-tight text-white">User Settings</h2>
+                <button onclick="toggleSettings()" class="text-gray-500 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+            </div>
+            
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 block">Email Address</label>
+                    <input type="email" id="settings-email" class="w-full bg-white/5 border-none text-white px-6 py-4 rounded-2xl focus:ring-1 focus:ring-[#bac3ff]/30" placeholder="your@email.com">
+                </div>
+                <div>
+                    <label class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2 block">Phone Number</label>
+                    <input type="text" id="settings-phone" class="w-full bg-white/5 border-none text-white px-6 py-4 rounded-2xl focus:ring-1 focus:ring-[#bac3ff]/30" placeholder="+1234567890">
+                </div>
+                
+                <div class="pt-4">
+                    <button onclick="saveSettings()" class="w-full py-4 bg-[#bac3ff] text-[#0b1326] rounded-2xl font-black uppercase tracking-widest hover:bg-white transition-all">Save Changes</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Feedback UI -->
@@ -189,6 +263,6 @@
         Session Refreshed
     </div>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=2"></script>
 </body>
 </html>

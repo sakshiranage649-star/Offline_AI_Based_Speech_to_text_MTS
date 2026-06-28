@@ -1,0 +1,28 @@
+--- STARTING TRANSLATION TESTS ---
+
+Loading Translation Model...
+Model Load Time: 3.20 seconds
+
+Translating to French (fr)...
+Time Taken: 28.65 seconds
+Result: Le renard brun rapide saute sur le chien paresseux.C'est une phrase très courante utilisée pour le test.
+
+Translating to Spanish (es)...
+Time Taken: 21.48 seconds
+Result: La zorra marrón rápida salta sobre el perro perezoso.Esta es una frase muy común utilizada para la prueba.
+
+Translating to German (de)...
+Time Taken: 21.78 seconds
+Result: Der schnelle braune Fuchs springt über den faulen Hund.Dies ist ein sehr häufiger Satz, der zum Testen verwendet wird.
+
+Translating to Hindi (hi)...
+Time Taken: 20.89 seconds
+Result: तेजी से ब्राउन भेड़ें लेनदेन कुत्ते पर कूदती हैं. यह परीक्षण के लिए उपयोग की जाने वाली एक बहुत ही आम वाक्य है.
+
+--- STARTING MEDIA TRANSCRIBE TESTS ---
+Loading STT Model...
+STT Model Load Time: 3.87 seconds
+
+Testing Audio Transcription (test2.wav)...
+Time Taken: 2.86 seconds
+Audio Transcription Result: 

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Transly</title>
+    <link href="assets/css/google_fonts.css" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/fontawesome.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            overflow: hidden;
+        }
+        .login-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 { color: white; margin-bottom: 30px; font-weight: 600; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        label { color: rgba(255,255,255,0.8); display: block; margin-bottom: 8px; font-size: 0.9rem; }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 10px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+        input:focus { background: rgba(255,255,255,0.2); border-color: #667eea; }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #667eea;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        .password-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .password-container input {
+            padding-right: 40px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            cursor: pointer;
+            color: rgba(255,255,255,0.6);
+            transition: 0.3s;
+        }
+        .toggle-password:hover {
+            color: white;
+        }
+        button:hover { background: #764ba2; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .links { margin-top: 20px; color: rgba(255,255,255,0.6); font-size: 0.9rem; }
+        .links a { color: white; text-decoration: none; font-weight: 600; }
+        .error-msg { color: #ff4d4d; margin-top: 10px; font-size: 0.85rem; display: none; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <h1>Welcome Back</h1>
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Enter your username">
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Enter your password">
+                <i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
+            </div>
+        </div>
+        <div id="error" class="error-msg">Invalid credentials</div>
+        <button onclick="login()">Login</button>
+        <div class="links">
+            Don't have an account? <a href="register.html">Sign Up</a>
+        </div>
+    </div>
+
+    <script>
+        function togglePassword(id, el) {
+            const input = document.getElementById(id);
+            if (input.type === "password") {
+                input.type = "text";
+                el.classList.remove('fa-eye');
+                el.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                el.classList.remove('fa-eye-slash');
+                el.classList.add('fa-eye');
+            }
+        }
+
+        async function login() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const error = document.getElementById('error');
+
+            try {
+                const res = await fetch('/login', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username: user, password: pass})
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    if (data.user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    error.style.display = 'block';
+                }
+            } catch (e) {
+                console.error(e);
+                error.innerText = "Connection error";
+                error.style.display = 'block';
+            }
+        }
+    </script>
+</body>
+</html>

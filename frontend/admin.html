@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard </title>
+    <link href="assets/css/google_fonts.css" rel="stylesheet">
+    <script src="assets/js/chart.js"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --bg: #f8f9fa;
+            --card: #ffffff;
+            --text: #333;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            height: 100vh;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 30px 20px;
+            box-sizing: border-box;
+            position: fixed;
+        }
+        .sidebar h2 { margin-bottom: 40px; font-weight: 600; letter-spacing: 1px; }
+        .nav-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.1); }
+        
+        /* Main Content */
+        .main {
+            margin-left: 260px;
+            width: calc(100% - 260px);
+            padding: 40px;
+            box-sizing: border-box;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .user-profile { display: flex; align-items: center; gap: 15px; }
+        .logout-btn {
+            padding: 10px 24px;
+            background: rgba(255, 77, 77, 0.1);
+            color: #ff4d4d;
+            border: 1px solid rgba(255, 77, 77, 0.2);
+            border-radius: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background: #ff4d4d;
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 77, 77, 0.3);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+        .stat-card h3 { color: #888; font-size: 0.9rem; margin-bottom: 10px; }
+        .stat-card p { font-size: 1.8rem; font-weight: 600; color: var(--primary); margin: 0; }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        .chart-container {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .chart-container.full-width { grid-column: span 2; }
+        .chart-container h4 { margin-top: 0; color: #555; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+
+        .download-btn {
+            font-size: 0.75rem;
+            padding: 5px 10px;
+            background: #eef1ff;
+            color: var(--primary);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .download-btn:hover { background: var(--primary); color: white; }
+
+        /* Table */
+        .table-container {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .table-container h4 { margin-top: 0; color: #555; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th { text-align: left; padding: 12px; color: #888; font-weight: 400; border-bottom: 1px solid #eee; }
+        td { padding: 15px 12px; border-bottom: 1px solid #eee; font-size: 0.95rem; }
+        .role-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            background: #eef1ff;
+            color: var(--primary);
+        }
+        .role-badge.admin { background: #fff1f0; color: #ff4d4d; }
+
+        .section { display: none; }
+        .section.active { display: block; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>Admin-Panel</h2>
+        <div class="nav-item active" onclick="showSection('dashboard', this)">Dashboard</div>
+        <div class="nav-item" onclick="showSection('users', this)">Users</div>
+        <div class="nav-item" onclick="showSection('settings', this)">Settings</div>
+        <div class="nav-item" onclick="window.location.href='index.html'">View App</div>
+    </div>
+
+    <div class="main">
+        <header>
+            <div>
+                <h1 id="pageTitle">Admin Dashboard</h1>
+                <div id="lastUpdate" style="font-size: 0.7rem; color: #888; margin-top: 4px;">Last updated: --:--:--</div>
+            </div>
+            <div class="user-profile">
+                <div style="display: flex; align-items: center; gap: 6px; padding: 4px 10px; background: rgba(76, 209, 55, 0.1); color: #4cd137; border-radius: 20px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase;">
+                    <span style="width: 6px; height: 6px; background: #4cd137; border-radius: 50%; display: inline-block; animation: pulse 2s infinite;"></span>
+                    Live Data
+                </div>
+                <span id="adminName">Admin User</span>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+        </header>
+
+        <style>
+            @keyframes pulse {
+                0% { opacity: 1; }
+                50% { opacity: 0.4; }
+                100% { opacity: 1; }
+            }
+        </style>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Users</h3>
+                    <p id="totalUsers">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Translations</h3>
+                    <p id="totalTranslations">0</p>
+                </div>
+                <div class="stat-card">
+                    <h3>System Status</h3>
+                    <p style="color: #4cd137;">Online</p>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-container">
+                    <h4>
+                        Daily Traffic (Last 7 Days)
+                        <button class="download-btn" onclick="downloadTrafficData()">Download CSV</button>
+                    </h4>
+                    <canvas id="trafficChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h4>
+                        Language Popularity
+                        <button class="download-btn" onclick="downloadLangData()">Download CSV</button>
+                    </h4>
+                    <canvas id="langChart"></canvas>
+                </div>
+                <div class="chart-container full-width">
+                    <h4>
+                        Top Token Consumers
+                        <button class="download-btn" onclick="downloadTokenData()">Download CSV</button>
+                    </h4>
+                    <canvas id="tokenChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div id="usersSection" class="section">
+            <div class="table-container">
+                <h4>
+                    User Management
+                    <button class="download-btn" onclick="downloadUserData()">Download User List (CSV)</button>
+                </h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Role</th>
+                            <th>Tokens Remaining</th>
+                            <th>Joined Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                        <!-- Data will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settingsSection" class="section">
+            <div class="table-container">
+                <h4>Admin Settings</h4>
+                <div style="padding: 20px; color: #666;">
+                    <p>System settings and configurations will appear here.</p>
+                    <div style="margin-top: 20px;">
+                        <label style="display: block; margin-bottom: 10px; font-weight: 600;">Default Welcome Tokens</label>
+                        <input type="number" id="defaultTokensInput" value="1000" style="padding: 10px; border-radius: 8px; border: 1px solid #ddd; width: 100%; max-width: 300px;">
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <button class="nav-item" style="background: var(--primary); color: white; border: none; padding: 10px 20px;" onclick="saveSettings()">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auth Check
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user || user.role !== 'admin') {
+            window.location.href = 'login.html';
+        }
+        document.getElementById('adminName').innerText = `Hello, ${user.username}`;
+
+        let reportsData = null;
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        function showSection(section, el) {
+            // Update Sidebar
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            if(el) el.classList.add('active');
+
+            // Update Page Title
+            const titleMap = {
+                'dashboard': 'Admin Dashboard',
+                'users': 'User Management',
+                'settings': 'Admin Settings'
+            };
+            document.getElementById('pageTitle').innerText = titleMap[section];
+
+            // Show Section
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(section + 'Section').classList.add('active');
+        }
+        let charts = {
+            traffic: null,
+            lang: null,
+            token: null
+        };
+
+        async function fetchReports() {
+            try {
+                const res = await fetch('/admin/reports', {
+                    headers: { 'admin-id': user.id }
+                });
+                const data = await res.json();
+                reportsData = data;
+
+                // Update Stats
+                document.getElementById('totalUsers').innerText = data.total_users;
+                document.getElementById('totalTranslations').innerText = data.total_translations;
+                document.getElementById('lastUpdate').innerText = `Last updated: ${new Date().toLocaleTimeString()}`;
+
+                // 1. Traffic Chart (Line)
+                if (charts.traffic) charts.traffic.destroy();
+                charts.traffic = new Chart(document.getElementById('trafficChart'), {
+                    type: 'line',
+                    data: {
+                        labels: data.daily_traffic.map(d => d.date),
+                        datasets: [{
+                            label: 'Translations',
+                            data: data.daily_traffic.map(d => d.count),
+                            borderColor: '#667eea',
+                            tension: 0.4,
+                            fill: true,
+                            backgroundColor: 'rgba(102, 126, 234, 0.1)'
+                        }]
+                    },
+                    options: { responsive: true, plugins: { legend: { display: false } } }
+                });
+
+                // 2. Language Popularity (Pie)
+                if (charts.lang) charts.lang.destroy();
+                charts.lang = new Chart(document.getElementById('langChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: data.lang_popularity.map(l => l.lang),
+                        datasets: [{
+                            data: data.lang_popularity.map(l => l.count),
+                            backgroundColor: ['#667eea', '#764ba2', '#6b8cff', '#a29bfe', '#dfe6e9']
+                        }]
+                    },
+                    options: { responsive: true }
+                });
+
+                // 3. Token Leaders (Bar)
+                if (charts.token) charts.token.destroy();
+                charts.token = new Chart(document.getElementById('tokenChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: data.token_leaders.map(u => u.username),
+                        datasets: [{
+                            label: 'Tokens Used',
+                            data: data.token_leaders.map(u => u.tokens),
+                            backgroundColor: '#764ba2'
+                        }]
+                    },
+                    options: { 
+                        responsive: true, 
+                        indexAxis: 'y',
+                        plugins: { legend: { display: false } } 
+                    }
+                });
+
+                // User Table
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = ''; // Clear first
+                data.user_list.forEach(u => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>#${u.id}</td>
+                        <td>${u.username}</td>
+                        <td><span class="role-badge ${u.role}">${u.role}</span></td>
+                        <td>${u.tokens.toLocaleString()}</td>
+                        <td>${new Date(u.created_at).toLocaleDateString()}</td>
+                        <td>
+                            <button class="download-btn" onclick="editTokens(${u.id}, '${u.username}', ${u.tokens})">Edit Tokens</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+            } catch (e) {
+                console.error("Failed to fetch reports", e);
+            }
+        }
+
+        // Real-time update every 30 seconds
+        setInterval(fetchReports, 30000);
+
+        // CSV Download Helpers
+        function downloadCSV(filename, rows) {
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + rows.map(e => e.join(",")).join("\n");
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        function downloadTrafficData() {
+            if(!reportsData) return;
+            const rows = [["Date", "Translation Count"]];
+            reportsData.daily_traffic.forEach(d => rows.push([d.date, d.count]));
+            downloadCSV("daily_traffic_report.csv", rows);
+        }
+
+        function downloadLangData() {
+            if(!reportsData) return;
+            const rows = [["Language", "Usage Count"]];
+            reportsData.lang_popularity.forEach(l => rows.push([l.lang, l.count]));
+            downloadCSV("language_popularity_report.csv", rows);
+        }
+
+        function downloadTokenData() {
+            if(!reportsData) return;
+            const rows = [["Username", "Tokens Used"]];
+            reportsData.token_leaders.forEach(u => rows.push([u.username, u.tokens]));
+            downloadCSV("token_usage_report.csv", rows);
+        }
+
+        function downloadUserData() {
+            if(!reportsData) return;
+            const rows = [["ID", "Username", "Role", "Tokens Remaining", "Joined Date"]];
+            reportsData.user_list.forEach(u => rows.push([u.id, u.username, u.role, u.tokens, u.created_at]));
+            downloadCSV("user_list_report.csv", rows);
+        }
+
+        async function fetchSettings() {
+            try {
+                const res = await fetch('/admin/settings', {
+                    headers: { 'admin-id': user.id }
+                });
+                const settings = await res.json();
+                if (settings.default_welcome_tokens) {
+                    document.getElementById('defaultTokensInput').value = settings.default_welcome_tokens;
+                }
+            } catch (e) { console.error("Failed to fetch settings", e); }
+        }
+
+        async function saveSettings() {
+            const val = document.getElementById('defaultTokensInput').value;
+            try {
+                const res = await fetch('/admin/update-setting', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'admin-id': user.id
+                    },
+                    body: JSON.stringify({ key: 'default_welcome_tokens', value: val })
+                });
+                if (res.ok) {
+                    alert('Settings updated successfully!');
+                    fetchSettings();
+                } else {
+                    alert('Failed to update settings');
+                }
+            } catch (e) { alert('Error updating settings'); }
+        }
+
+        async function editTokens(userId, username, currentTokens) {
+            const newTokenStr = prompt(`Enter new token limit for ${username}:`, currentTokens);
+            if (newTokenStr === null) return;
+            const newTokens = parseInt(newTokenStr);
+            if (isNaN(newTokens)) {
+                alert("Invalid token amount");
+                return;
+            }
+
+            try {
+                const res = await fetch('/admin/update-user-tokens', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'admin-id': user.id
+                    },
+                    body: JSON.stringify({ user_id: userId, tokens: newTokens })
+                });
+                if (res.ok) {
+                    alert(`Updated tokens for ${username}`);
+                    fetchReports(); // Refresh table
+                } else {
+                    alert('Failed to update tokens');
+                }
+            } catch (e) { alert('Error updating tokens'); }
+        }
+
+        fetchSettings();
+        fetchReports();
+    </script>
+</body>
+</html>

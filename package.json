@@ -1,0 +1,9 @@
+{
+  "name": "multilingual-translation",
+  "version": "1.0.0",
+  "description": "Multilingual AI Translation App",
+  "scripts": {
+    "project": "cd backend && start http://127.0.0.1:8080 && python app.py",
+    "start": "cd backend && python app.py"
+  }
+}
